@@ -1,0 +1,143 @@
+<!--
+    Level generator for Arkanoid Remake
+    GitHub project: https://github.com/mateuszji/Arkanoid-Remake
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta author="mateuszji">
+    <title>Arkanoid-Remake Level Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #343434;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            height: 100vh;
+        }
+        #game {
+            height: 960px;
+            width: 540px;
+            background-image: url('https://github.com/mateuszji/Arkanoid-Remake/raw/main/Assets/Sprites/Background.png');
+        }
+        #copy {
+            width: 540px;
+            height: 50px;
+            border-radius: 100px;
+            background: white;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+        }
+        .brick {
+            width: 75px;
+            height: 23px;
+            border: 1px solid #000;
+            position: relative;
+            left: 75px;
+            top: 181px;
+            margin: 0 1px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            background-color:rgba(255, 255, 255, 0.5);
+            font-size: 1.3em;
+            cursor: default;
+        }
+    </style>
+</head>
+<body>
+    <div id="game">
+    </div>
+    <div id="copy">COPY TO CLIPBOARD</div>
+
+    <script>
+        const game = document.getElementById("game");
+        const copy = document.getElementById("copy");
+        const maxRows = 10;
+        const maxCols = 5;
+
+        let bricksArray = [
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0],
+        ];
+
+        for(let i = 0; i < maxRows; i++) {
+            for(let j = 0; j < maxCols; j++) {
+                let newBrick = document.createElement("div");
+                newBrick.classList.add("brick");
+                newBrick.setAttribute("row", i);
+                newBrick.setAttribute("col", j);
+                newBrick.setAttribute("val", 0);
+                newBrick.innerHTML = "0";
+
+                newBrick.addEventListener('click', () => {
+                    let val = newBrick.getAttribute("val");
+                    val++;
+                    if(val > 3) { val = 0; }
+
+                    newBrick.setAttribute("val", val);
+                    newBrick.innerHTML = newBrick.getAttribute("val");
+
+                    changeArray(newBrick);
+                });
+
+                game.appendChild(newBrick);
+            }
+            
+            let newLine = document.createElement("br");
+            game.appendChild(newLine);
+        }
+
+        copy.addEventListener("click", copyToClipboard);
+
+        function changeArray(el) {
+            copy.innerHTML = "COPY TO CLIPBOARD";
+            let row = el.getAttribute("row");
+            let col = el.getAttribute("col");
+            let val = el.getAttribute("val");
+            bricksArray[row][col] = parseInt(val);
+        }
+
+        function copyToClipboard() {
+            copy.innerHTML = "COPIED!";
+
+            let txt = '';
+            for(let i = 0; i < maxRows; i++) {
+                for(let j = 0; j < maxCols; j++) {
+                    txt += bricksArray[i][j];
+                    if(j != maxCols-1)
+                        txt += ",";
+                }
+                if(i != maxRows-1)
+                    txt += "\n";
+            }
+            navigator.clipboard.writeText(txt);
+        }
+    </script>
+</body>
+</html>
